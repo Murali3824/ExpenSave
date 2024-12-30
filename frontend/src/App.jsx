@@ -8,6 +8,9 @@ import ResetPassword from './pages/ResetPassword';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ExpenseManager from './components/ExpenseManager';
+import Dashboard from './components/Dashboard';
+import Profile from './components/Profile';
+import LearnMore from './components/LearnMore';
 
 const App = () => {
   return (
@@ -39,10 +42,13 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/login' element={<Login/>}/>
+        <Route path='/profile' element={<Profile/>}/>
         <Route path='/email-verify' element={<EmailVerify/>}/>
         <Route path='/verify' element={<Verifyinfo/>}/>
         <Route path='/reset-password' element={<ResetPassword/>}/>
+        <Route path='/dashboard' element={<Dashboard/>}/>
         <Route path='/add-expenses' element={<ExpenseManager/>}/>
+        <Route path='/learn-more' element={<LearnMore/>}/>
       </Routes>
     </div>
   );

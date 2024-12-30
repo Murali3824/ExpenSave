@@ -1,98 +1,86 @@
 import React, { useContext } from 'react';
-import { ImagePlus, PieChart, UserCircle, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';  // Import NavLink
-import { assets } from '../assets/assets';
+import { PlusCircle, BarChart3, ArrowRight, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 
 const Header = () => {
-
-    const { userData } = useContext(AppContext)
-
+    const { userData } = useContext(AppContext);
     const navigate = useNavigate();
 
+    const handleNavigate = () => {
+        navigate(userData ? '/dashboard' : '/login');
+    };
+
     const handleAddExpense = () => {
-        if (userData) {
-            navigate("/add-expenses");
-        } else {
-            navigate("/login");
-        }
+        navigate(userData ? '/add-expenses' : '/login');
     };
 
     return (
-        <div className="relative pt-16 min-h-screen w-full bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900">
-            {/* Background decoration */}
-            <div className="absolute inset-0 bg-grid-white/[0.02] bg-gradient-to-b from-transparent via-transparent to-zinc-900/50" />
-
-            <div className="relative flex flex-col items-center justify-center px-4 py-24">
-                {/* Profile Section */}
-                <div className="relative mb-8">
-                    <div className="relative">
-                        <img
-                            src={assets.header_img}
-                            alt="User Profile"
-                            className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover shadow-xl border-4 border-zinc-700/50 transition-transform hover:scale-105 duration-300"
-                        />
-                        <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-emerald-400 to-blue-500 p-2 rounded-full animate-pulse">
-                            <ImagePlus className="w-6 h-6 text-white" />
+        <div className="min-h-screen w-full bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900">
+            <div className=" max-w-2xl mt-20 mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24">
+                {/* Welcome Banner */}
+                <div className=" flex flex-col md:flex-row items-center justify-between mb-12 bg-slate-800/50 p-6 rounded-2xl border border-slate-700/30">
+                    <div className="flex items-center gap-4 mb-4 md:mb-0">
+                        <div className="p-3 bg-indigo-500/10 rounded-xl">
+                            <User className="w-6 h-6 text-indigo-400" />
+                        </div>
+                        <div>
+                            <h2 className="text-slate-200 text-lg font-medium">
+                                Welcome, {userData ? userData.name.toUpperCase() : 'Guest'}
+                            </h2>
+                            <p className="text-slate-400 text-sm">
+                                {userData ? 'Manage your expenses efficiently' : 'Sign in to track your expenses'}
+                            </p>
                         </div>
                     </div>
+                    <button
+                        onClick={handleNavigate}
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-500/10 text-indigo-400 rounded-lg hover:bg-indigo-500/20 transition-colors"
+                    >
+                        <BarChart3 className="w-4 h-4" />
+                        <span>Dashboard</span>
+                    </button>
                 </div>
 
-                {/* Content Section */}
-                <div className="w-full max-w-3xl space-y-6 text-center px-4">
-                    {/* Greeting */}
-                    <div className="inline-flex items-center gap-3 px-6 py-2 bg-zinc-800/50 rounded-full border border-zinc-700/30 backdrop-blur-sm">
-                        <UserCircle className="text-indigo-400 w-6 h-6" />
-                        <span className="text-zinc-200 font-medium">
-                            Welcome back, {userData ? userData.name : "User"}
-                        </span>
-                        <span className="text-2xl animate-wave">👋</span>
-                    </div>
-                    {/* Welcome Badge */}
-                    <div className="inline-flex items-center gap-3 px-6 py-2 bg-emerald-800/50 rounded-full border border-emerald-700/30 backdrop-blur-sm">
-                        <PieChart className="text-emerald-400 w-5 h-5" />
-                        <span className="text-emerald-100 font-medium">
-                            Your Financial Dashboard
-                        </span>
-                    </div>
-                    {/* Main Title */}
-                    <h1 className="text-4xl md:text-6xl font-bold">
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-blue-400 to-indigo-400">
-                            Smart Money Management
-                        </span>
+                {/* Main Content */}
+                <div className="text-center max-w-4xl mx-auto mb-16">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
+                        Smart Financial Management
                     </h1>
-
-                    {/* Description */}
-                    <p className="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-                        Track, analyze, and optimize your expenses with our intelligent expense
-                        management system. Take control of your financial future today.
+                    <p className="text-slate-400 text-lg md:text-xl mb-8 leading-relaxed">
+                        Take control of your finances with our intelligent expense tracking system.
+                        Monitor spending patterns, set budgets, and achieve your financial goals.
                     </p>
 
-                    {/* CTA Buttons */}
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+                    {/* Action Buttons */}
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
                         <button
                             onClick={handleAddExpense}
-                            className="group relative px-8 py-3 bg-gradient-to-r from-emerald-400 to-blue-500 rounded-full text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25 hover:scale-105"
+                            className="group w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-all"
                         >
-                            Add New Expense
-                            <ChevronRight className="inline-block w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+                            <PlusCircle className="w-5 h-5" />
+                            <span>Record Expense</span>
+                            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                         </button>
-
-                        <button className="px-8 py-3 border border-zinc-700 rounded-full text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors duration-300">
+                        <button onClick={() => navigate('/learn-more')}
+ className="w-full sm:w-auto px-8 py-3 border border-slate-700 text-slate-300 rounded-lg hover:bg-slate-800 hover:border-slate-600 transition-all">
                             Learn More
                         </button>
                     </div>
 
-                    {/* Stats Section */}
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-12">
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {[
-                            { label: "Active Users", value: "10K+" },
-                            { label: "Countries", value: "50+" },
-                            { label: "Success Rate", value: "99%" }
+                            { label: "Active Users", value: "10K+", color: "from-indigo-500" },
+                            { label: "Success Rate", value: "99%", color: "from-purple-500" },
+                            { label: "Daily Transactions", value: "50K+", color: "from-pink-500" },
+                            { label: "Customer Rating", value: "4.9/5", color: "from-rose-500" }
                         ].map((stat, index) => (
-                            <div key={index} className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/30 backdrop-blur-sm">
-                                <div className="text-2xl font-bold text-white">{stat.value}</div>
-                                <div className="text-zinc-400 text-sm">{stat.label}</div>
+                            <div key={index} className="p-4 bg-slate-800/50 rounded-xl border border-slate-700/30">
+                                <div className={`text-2xl font-bold bg-gradient-to-r ${stat.color} to-transparent bg-clip-text text-transparent mb-1`}>
+                                    {stat.value}
+                                </div>
+                                <div className="text-slate-400 text-sm">{stat.label}</div>
                             </div>
                         ))}
                     </div>
