@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { ImagePlus, PieChart, UserCircle, ChevronRight } from 'lucide-react';
-import { NavLink, useNavigate } from 'react-router-dom';  // Import NavLink
+import { useNavigate } from 'react-router-dom';  // Import NavLink
 import { assets } from '../assets/assets';
 import { AppContext } from '../context/AppContext';
 
