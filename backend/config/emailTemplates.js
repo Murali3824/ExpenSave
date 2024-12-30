@@ -95,7 +95,7 @@ export const VERIFY_TEMPLATE = `
                     <tbody>
                       <tr>
                         <td>
-                          <h1>Welcome to AUTHFLOW!</h1>
+                          <h1>Welcome to ExpenSave!</h1>
                           <p>You are just one step away from verifying your account. Please confirm your email address to get started.</p>
                           <p>Your email address: <span class="highlight">{{email}}</span></p>
                           <p>Please click the link below to verify your email:</p>
@@ -104,7 +104,6 @@ export const VERIFY_TEMPLATE = `
                       </tr>
                       <tr>
                         <td>
-                          <p>If you did not register for an account with us, please ignore this email.</p>
                           <p>Need help? Feel free to reach out to our support team at teamSupport@gmail.com</p>
                         </td>
                       </tr>
@@ -112,7 +111,7 @@ export const VERIFY_TEMPLATE = `
                   </table>
                   <div class="footer">
                     <p>Best regards,</p>
-                    <p>The AUTHFLOW Team</p>
+                    <p>The ExpenSave Team</p>
                     <p>If you need any assistance, contact us at teamSupport@gmail.com</p>
                   </div>
                 </td>
@@ -337,11 +336,11 @@ export const WELCOME_TEMPLATE = `
                     <tbody>
                       <tr>
                         <td>
-                          <h1>Welcome to AUTHFLOW!</h1>
-                          <p>Thank you for verifying your email address. Your account is now fully activated, and you're all set to explore the features of AUTHFLOW.</p>
+                          <h1>Welcome to ExpenSave!</h1>
+                          <p>Thank you for verifying your email address. Your account is now fully activated, and you're all set to explore the features of ExpenSave.</p>
                           <p>Here are a few things you can do next:</p>
                           <ul>
-                            <li>Update your profile to make it uniquely yours.</li>
+                            <li>Add your daliy expenses.</li>
                             <li>Discover the latest features and integrations.</li>
                             <li>Start your journey with our easy-to-use tools.</li>
                           </ul>
@@ -358,7 +357,7 @@ export const WELCOME_TEMPLATE = `
                   </table>
                   <div class="footer">
                     <p>Best regards,</p>
-                    <p>The AUTHFLOW Team</p>
+                    <p>The ExpenSave Team</p>
                     <p>If you need any assistance, contact us at teamSupport@gmail.com</p>
                   </div>
                 </td>
