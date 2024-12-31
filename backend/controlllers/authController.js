@@ -298,7 +298,7 @@ export const verifyEmail = async (req, res) => {
         const mailOption = {
             from: process.env.SENDER_EMAIL,
             to: user.email,
-            subject: 'Welcome to AUTHFLOW',
+            subject: 'Welcome to ExpenSave',
             // text: `welcome`,
             html: WELCOME_TEMPLATE.replace("{{email}}",user.email).replace("{{dashboardLink}}",`${process.env.FRONTEND_URL}`)
         };
@@ -456,6 +456,72 @@ export const resetPassword = async (req, res) => {
 };
 
 
+// Get user profile details
+export const getProfile = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const user = await userModel.findById(userId).select('-password');
+
+        if (!user) {
+            return res.json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        return res.json({
+            success: true,
+            user
+        });
+    } catch (error) {
+        res.json({
+            success: false,
+            message: error.message
+        });
+    }
+};
 
 
+// Update user profile name
+export const updateProfileName = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { name } = req.body;
 
+        if (!name) {
+            return res.json({
+                success: false,
+                message: "Name is required"
+            });
+        }
+
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            return res.json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        user.name = name;
+        await user.save();
+
+        return res.json({
+            success: true,
+            message: "Profile name updated successfully",
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                isAccountVerified: user.isAccountVerified,
+            }
+        });
+    } catch (error) {
+        res.json({
+            success: false,
+            message: error.message
+        });
+    }
+};
