@@ -14,8 +14,8 @@ const port = process.env.PORT || 4000;
 connectDB();
 
 // Define allowed origins
-// const allowedOrigins = process.env.FRONTEND_URL;
-const allowedOrigins = ['http://localhost:5173', 'http://192.168.1.3:5173'];
+const allowedOrigins = process.env.FRONTEND_URL;
+// const allowedOrigins = ['http://localhost:5173', 'http://192.168.1.3:5173'];
 
 // Middlewares
 app.use(express.json());
