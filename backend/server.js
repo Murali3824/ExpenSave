@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
-import path from 'path';
 import connectDB from './config/mongodb.js';
 import authRouters from './routes/authRouters.js';
 import userRouters from './routes/userRouters.js';
@@ -16,6 +15,7 @@ connectDB();
 
 // Define allowed origins
 const allowedOrigins = process.env.FRONTEND_URL.split(',');
+// const allowedOrigins = ['http://localhost:5173', 'http://192.168.1.3:5173'];
 
 // Middlewares
 app.use(express.json());
@@ -33,10 +33,6 @@ app.use(cors({
     credentials: true,
 }));
 
-// Serve static files from the React app
-const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
-
 // API routes
 app.use('/api/auth', authRouters);
 app.use('/api/user', userRouters);
@@ -47,11 +43,6 @@ app.get('/', (req, res) => {
     res.send("Server is running");
 });
 
-// Catch-all route to serve the index.html file for any route not handled by the backend
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
-});
-
-app.listen(port, '0.0.0.0', () => {
+app.listen(port,'0.0.0.0', () => {
     console.log("Server is running on port: ", port);
 });
