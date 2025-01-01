@@ -14,7 +14,7 @@ const port = process.env.PORT || 4000;
 connectDB();
 
 // Define allowed origins
-const allowedOrigins = process.env.FRONTEND_URL;
+const allowedOrigins = process.env.FRONTEND_URL.split(',');
 // const allowedOrigins = ['http://localhost:5173', 'http://192.168.1.3:5173'];
 
 // Middlewares
@@ -23,9 +23,14 @@ app.use(cookieParser());
 
 // Configure CORS middleware
 app.use(cors({
-    origin: allowedOrigins, // Allow specific origins
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true, // Allow credentials (cookies)
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
 }));
 
 // API routes
