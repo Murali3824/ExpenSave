@@ -24,6 +24,7 @@ app.use(cookieParser());
 // Configure CORS middleware
 app.use(cors({
     origin: allowedOrigins, // Allow specific origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true, // Allow credentials (cookies)
 }));
 
