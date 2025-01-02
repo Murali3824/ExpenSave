@@ -14,7 +14,6 @@ const port = process.env.PORT || 4000;
 connectDB();
 
 // Define allowed origins
-const allowedOrigins = process.env.FRONTEND_URL.split(',');
 // const allowedOrigins = ['http://localhost:5173', 'http://192.168.1.3:5173'];
 
 // Middlewares
@@ -22,8 +21,9 @@ app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 
 // Configure CORS middleware
-app.use(cors({
-    origin: (origin, callback) => {
+const corsConfig = {
+    origin: function (origin, callback) {
+        const allowedOrigins = process.env.FRONTEND_URL.split(',');
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
@@ -34,10 +34,27 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['set-cookie']
-}));
+};
+
+app.use(cors(corsConfig));
 
 // Enable trust proxy for secure cookies behind a proxy (like in Render)
 app.set('trust proxy', 1);
+
+// Updated cookie configuration middleware
+app.use((req, res, next) => {
+    res.cookie = function(name, value, options) {
+        options = {
+            ...options,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            httpOnly: true,
+            path: '/'
+        };
+        return res.cookie(name, value, options);
+    };
+    next();
+});
 
 // API routes
 app.use('/api/auth', authRouters);

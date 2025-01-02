@@ -7,17 +7,14 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Create a function to get cookie options based on environment
-const getCookieOptions = () => {
-    return {
-      httpOnly: true,
-      secure: true, // Always true for production
-      sameSite: 'none', // Required for cross-site cookies
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      domain: process.env.NODE_ENV === 'production' 
-        ? '.onrender.com'  // Update this to match your domain
-        : 'localhost'
-    };
-  };
+const getCookieConfig = () => ({
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    path: '/',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+});
+
 
 // User registration
 export const register = async (req, res) => {
@@ -48,7 +45,7 @@ export const register = async (req, res) => {
                 );
 
                 // Use the new cookie options
-                res.cookie('token', token, getCookieOptions());
+                res.cookie('token', token, getCookieConfig());
 
 
                 return res.json({
@@ -90,7 +87,7 @@ export const register = async (req, res) => {
 
 
         // Use the new cookie options
-        res.cookie('token', token, getCookieOptions());
+        res.cookie('token', token, getCookieConfig());
 
 
         return res.json({
@@ -159,7 +156,7 @@ export const login = async (req, res) => {
 
 
             // Use the new cookie options
-            res.cookie('token', token, getCookieOptions());
+            res.cookie('token', token, getCookieConfig());
 
 
             return res.json({
@@ -185,7 +182,7 @@ export const login = async (req, res) => {
 
 
         // Use the new cookie options
-        res.cookie('token', token, getCookieOptions());
+        res.cookie('token', token, getCookieConfig());
 
 
         return res.json({
@@ -219,7 +216,7 @@ export const logout = async (req, res) => {
         // });
 
         res.clearCookie('token', {
-            ...getCookieOptions(),
+            ...getCookieConfig(),
             maxAge: 0
         });
 
