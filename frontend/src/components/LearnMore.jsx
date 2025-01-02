@@ -13,9 +13,9 @@ const LearnMore = () => {
     };
 
     return (
-        <div className="min-h-screen w-full bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-white">
+        <div id="learn-more" className="min-h-screen w-full  text-white">
             <Navbar />
-            <div className="max-w-6xl 2xl:max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24">
+            <div className="max-w-6xl 2xl:max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
                 <div className="flex flex-col justify-center items-center text-center max-w-4xl mx-auto mt-10 mb-16">
                     <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
                         Master Your Finances with ExpenSave

@@ -16,8 +16,8 @@ const Header = () => {
     };
 
     return (
-        <div className="min-h-screen w-full bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900">
-            <div className=" max-w-2xl mt-20 mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24">
+        <div className="w-full ">
+            <div className=" max-w-2xl mt-20 mx-auto px-4 sm:px-6 lg:px-8 pt-20 ">
                 {/* Welcome Banner */}
                 <div className=" flex flex-col md:flex-row items-center justify-between mb-12 bg-slate-800/50 p-6 rounded-2xl border border-slate-700/30">
                     <div className="flex items-center gap-4 mb-4 md:mb-0">
@@ -43,7 +43,7 @@ const Header = () => {
                 </div>
 
                 {/* Main Content */}
-                <div className="text-center max-w-4xl mx-auto mb-16">
+                <div className="text-center max-w-4xl mx-auto pt-2 mb-16">
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
                         Smart Financial Management
                     </h1>
@@ -62,8 +62,9 @@ const Header = () => {
                             <span>Record Expense</span>
                             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                         </button>
-                        <button onClick={() => navigate('/learn-more')}
- className="w-full sm:w-auto px-8 py-3 border border-slate-700 text-slate-300 rounded-lg hover:bg-slate-800 hover:border-slate-600 transition-all">
+                        <button
+                            onClick={() => document.getElementById('learn-more').scrollIntoView({ behavior: 'smooth' })}
+                            className="w-full sm:w-auto px-8 py-3 border border-slate-700 text-slate-300 rounded-lg hover:bg-slate-800 hover:border-slate-600 transition-all">
                             Learn More
                         </button>
                     </div>

@@ -33,14 +33,16 @@ const Login = () => {
 
             if (state === 'Sign Up') {
                 const { data } = await axios.post(backendUrl + '/api/auth/register', { name, email, password });
-                setIsLoading(false);  // Reset loading state
+                setIsLoading(false);
+                console.log(data.message);
+                  // Reset loading state
                 if (data.message.includes("Registration successful, please verify your email.")) {
                     toast.success("Registration successful, please verify your email.");
-                    navigate('/verify');
+                    navigate('/email-verify');
                 } else {
-                    if (data.message.includes("User already exists but email is not verified. Please verify your email.")) {
-                        toast.success("Please verify your email first.");
-                        navigate('/verify');
+                    if (data.message.includes("User exists but not verified")) {
+                        toast.success("User exists but not verified");
+                        navigate('/email-verify');
                     } else {
                         toast.error(data.message);
                     }
@@ -49,7 +51,7 @@ const Login = () => {
                 const { data } = await axios.post(backendUrl + '/api/auth/login', { email, password });
                 setIsLoading(false);  // Reset loading state
                 // console.log(data);
-                if (data.success) {
+                if (data.message.includes("Login successful")) {
                     toast.success("Login successful");
                     setIsLoggedin(true);
                     getUserData();
@@ -59,9 +61,9 @@ const Login = () => {
                     }, 500);
                 } else {
                     // Check for the specific message indicating email verification
-                    if (data.message.includes("Email not verified")) {
+                    if (data.message.includes("Email verification required")) {
                         toast.info("Please verify your email first.");
-                        navigate('/verify');  
+                        navigate('/email-verify');  
                     } else {
                         toast.error(data.message || "Something went wrong");
                     }

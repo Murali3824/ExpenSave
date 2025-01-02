@@ -133,7 +133,7 @@ const Dashboard = () => {
     return (
         <div className="w-full min-h-screen bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-white">
             <Navbar />
-            <div className="max-w-6xl 2xl:max-w-screen-xl mx-auto mb-20 px-4 md:px-20 2xl:px-5 py-8">
+            <div className="max-w-6xl 2xl:max-w-screen-xl mx-auto px-4 pb-20 md:px-20 2xl:px-5 py-8">
                 {/* Filters Section */}
                 <div className="flex gap-4 mt-24 mb-8">
                     <div className="relative flex-1 max-w-xs">
@@ -250,7 +250,6 @@ const Dashboard = () => {
                     </ResponsiveContainer>
                 </div>
             </div>
-            <Footer/>
         </div>
     );
 };
