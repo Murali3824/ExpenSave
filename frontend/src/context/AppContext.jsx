@@ -12,13 +12,7 @@ export const AppContextProvider = (props) => {
 
     // Configure axios defaults
     axios.defaults.withCredentials = true;
-    axios.defaults.headers.common['Content-Type'] = 'application/json';
     
-    // If in production, set specific headers for CORS
-    if (import.meta.env.PROD) {
-        axios.defaults.headers.common['Access-Control-Allow-Credentials'] = true;
-    }
-
     const getUserData = async () => {
         try {
             const { data } = await axios.get(`${backendUrl}/api/user/data`);
