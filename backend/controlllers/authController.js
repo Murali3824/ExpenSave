@@ -2,11 +2,9 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import userModel from '../models/userModel.js';
 import transporter from '../config/nodeMailer.js';
-import {VERIFY_TEMPLATE, EMAIL_VERIFY_TEMPLATE, PASSWORD_RESET_TEMPLATE, WELCOME_TEMPLATE } from '../config/emailTemplates.js'
-
+import { EMAIL_VERIFY_TEMPLATE,PASSWORD_RESET_TEMPLATE, WELCOME_TEMPLATE } from '../config/emailTemplates.js';
 import dotenv from 'dotenv';
 dotenv.config();
-
 
 // User registration
 export const register = async (req, res) => {
@@ -23,26 +21,33 @@ export const register = async (req, res) => {
         // Check if the user already exists
         const exists = await userModel.findOne({ email });
         if (exists) {
-            // If user exists but email is not verified, update the user with new details
+            // If user exists but email is not verified
             if (!exists.isAccountVerified) {
-                // Update the name and password if they are different
-                exists.name = name;
-                exists.password = await bcrypt.hash(password, 10); // Hash new password
-                await exists.save();
 
-                // Send email verification again (this is optional, based on your implementation)
-                const mailOptions = {
-                    from: process.env.SENDER_EMAIL,
-                    to: email,
-                    subject: 'Verify Your Email',
-                    // text: `Please verify your email by clicking on the following link: ${process.env.FRONTEND_URL}/email-verify`
-                    html: VERIFY_TEMPLATE.replace("{{email}}",exists.email).replace("{{verificationLink}}",`${process.env.FRONTEND_URL}/email-verify`)
-                };
-                await transporter.sendMail(mailOptions);
+                // Generate token for the existing unverified user
+                const token = jwt.sign(
+                    { id: exists._id },
+                    process.env.JWT_SECRET,
+                    { expiresIn: '7d' }
+                );
+
+                res.cookie('token', token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+                    maxAge: 7 * 24 * 60 * 60 * 1000,
+                });
 
                 return res.json({
                     success: true,
-                    message: "User already exists but email is not verified. Please verify your email."
+                    message: "User exists but not verified",
+                    requiresVerification: true,
+                    user: {
+                        _id: exists._id,
+                        email: exists.email,
+                        name: exists.name,
+                        isAccountVerified: exists.isAccountVerified
+                    }
                 });
             } else {
                 return res.json({
@@ -52,18 +57,16 @@ export const register = async (req, res) => {
             }
         }
 
-        // Hashing user password for the first time registration
+        // Create new user
         const hashPassword = await bcrypt.hash(password, 10);
-
-        // Save to DB for the first time registration
         const user = new userModel({
             name,
             email,
             password: hashPassword
         });
-
         await user.save();
-       
+
+        // Generate token for the new user
         const token = jwt.sign(
             { id: user._id },
             process.env.JWT_SECRET,
@@ -77,19 +80,16 @@ export const register = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        // Send email verification link
-        const mailOptions = {
-            from: process.env.SENDER_EMAIL,
-            to: email,
-            subject: 'Verify Your Email',
-            // text: `Please verify your email by clicking on the following link: ${process.env.FRONTEND_URL}/email-verify`
-            html: VERIFY_TEMPLATE.replace("{{email}}",user.email).replace("{{verificationLink}}",`${process.env.FRONTEND_URL}/email-verify`)
-        };
-        await transporter.sendMail(mailOptions);
-
         return res.json({
             success: true,
-            message: 'Registration successful, please verify your email.'
+            message: 'Registration successful, please verify your email.',
+            requiresVerification: true,
+            user: {
+                _id: user._id,
+                email: user.email,
+                name: user.name,
+                isAccountVerified: user.isAccountVerified
+            }
         });
 
     } catch (error) {
@@ -100,13 +100,11 @@ export const register = async (req, res) => {
     }
 };
 
-
 // User login
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Validate email and password
         if (!email || !password) {
             return res.json({
                 success: false,
@@ -116,7 +114,6 @@ export const login = async (req, res) => {
 
         const user = await userModel.findOne({ email });
 
-        // Validate user existence
         if (!user) {
             return res.json({
                 success: false,
@@ -124,7 +121,6 @@ export const login = async (req, res) => {
             });
         }
 
-        // Validate password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.json({
@@ -135,20 +131,29 @@ export const login = async (req, res) => {
 
         // Check if email is verified
         if (!user.isAccountVerified) {
-            // If email is not verified, send verification email again
-            const mailOptions = {
-                from: process.env.SENDER_EMAIL,
-                to: user.email,
-                subject: 'Verify Your Email',
-                html: VERIFY_TEMPLATE.replace("{{email}}", user.email)
-                    .replace("{{verificationLink}}", `${process.env.FRONTEND_URL}/email-verify`)
-            };
+            const token = jwt.sign(
+                { id: user._id },
+                process.env.JWT_SECRET,
+                { expiresIn: '7d' }
+            );
 
-            await transporter.sendMail(mailOptions);
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            });
 
             return res.json({
-                success: false,
-                message: "Email not verified. A verification email has been sent to your email. Please verify your email."
+                success: true,
+                message: "Email verification required",
+                requiresVerification: true,
+                user: {
+                    _id: user._id,
+                    email: user.email,
+                    name: user.name,
+                    isAccountVerified: user.isAccountVerified
+                }
             });
         }
 
@@ -159,7 +164,6 @@ export const login = async (req, res) => {
             { expiresIn: '7d' }
         );
 
-        // Set token in the cookie
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -167,19 +171,15 @@ export const login = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        // Exclude password from the response
-        const userResponse = {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            isAccountVerified: user.isAccountVerified,
-        };
-
-        // Respond with user data and success message
         return res.json({
             success: true,
             message: 'Login successful',
-            user: userResponse
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                isAccountVerified: user.isAccountVerified,
+            }
         });
 
     } catch (error) {
@@ -189,7 +189,6 @@ export const login = async (req, res) => {
         });
     }
 };
-
 
 
 // User logout
