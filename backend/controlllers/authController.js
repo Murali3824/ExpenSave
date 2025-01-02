@@ -9,8 +9,9 @@ dotenv.config();
 // Create a function to get cookie options based on environment
 const getCookieConfig = () => ({
     httpOnly: true,
-    secure: true, // Only for HTTPS
-    sameSite: 'None', // Cross-site cookies
+    secure: process.env.NODE_ENV === 'production', // Only set 'secure: true' in production (requires HTTPS)
+    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Use 'None' for cross-origin requests in production
+    domain: '.onrender.com', // Ensures the cookie is accessible across all subdomains
     path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 });
