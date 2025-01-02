@@ -18,7 +18,7 @@ connectDB();
 
 // Middlewares
 app.use(express.json());
-app.use(cookieParser(process.env.JWT_SECRET));
+app.use(cookieParser());
 
 // Configure CORS middleware
 const corsConfig = {
@@ -35,26 +35,7 @@ const corsConfig = {
     allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['set-cookie']
 };
-
 app.use(cors(corsConfig));
-
-// Enable trust proxy for secure cookies behind a proxy (like in Render)
-app.set('trust proxy', 1);
-
-// Updated cookie configuration middleware
-app.use((req, res, next) => {
-    res.cookie = function(name, value, options) {
-        options = {
-            ...options,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            httpOnly: true,
-            path: '/'
-        };
-        return res.cookie(name, value, options);
-    };
-    next();
-});
 
 // API routes
 app.use('/api/auth', authRouters);

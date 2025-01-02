@@ -10,7 +10,7 @@ dotenv.config();
 const getCookieConfig = () => ({
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
     path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 });
@@ -21,7 +21,6 @@ export const register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-
         if (!name || !email || !password) {
             return res.json({
                 success: false,
@@ -29,14 +28,11 @@ export const register = async (req, res) => {
             });
         }
 
-
         // Check if the user already exists
         const exists = await userModel.findOne({ email });
         if (exists) {
             // If user exists but email is not verified
             if (!exists.isAccountVerified) {
-
-
                 // Generate token for the existing unverified user
                 const token = jwt.sign(
                     { id: exists._id },
@@ -46,7 +42,6 @@ export const register = async (req, res) => {
 
                 // Use the new cookie options
                 res.cookie('token', token, getCookieConfig());
-
 
                 return res.json({
                     success: true,
@@ -67,7 +62,6 @@ export const register = async (req, res) => {
             }
         }
 
-
         // Create new user
         const hashPassword = await bcrypt.hash(password, 10);
         const user = new userModel({
@@ -77,7 +71,6 @@ export const register = async (req, res) => {
         });
         await user.save();
 
-
         // Generate token for the new user
         const token = jwt.sign(
             { id: user._id },
@@ -85,10 +78,8 @@ export const register = async (req, res) => {
             { expiresIn: '7d' }
         );
 
-
         // Use the new cookie options
         res.cookie('token', token, getCookieConfig());
-
 
         return res.json({
             success: true,
@@ -101,7 +92,6 @@ export const register = async (req, res) => {
                 isAccountVerified: user.isAccountVerified
             }
         });
-
 
     } catch (error) {
         res.json({
@@ -209,12 +199,7 @@ export const login = async (req, res) => {
 // User logout
 export const logout = async (req, res) => {
     try {
-        // res.clearCookie('token', {
-        //     httpOnly: true,
-        //     secure: process.env.NODE_ENV === 'production',
-        //     samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-        // });
-
+    
         res.clearCookie('token', {
             ...getCookieConfig(),
             maxAge: 0
@@ -234,19 +219,12 @@ export const logout = async (req, res) => {
 };
 
 
-
 // Send verification OTP to the user's email
 export const sendVerifyOtp = async (req, res) => {
     try {
         const { userId } = req.body;
 
-
-
-
         const user = await userModel.findById(userId);
-
-
-
 
         if (user.isAccountVerified) {
             return res.json({
@@ -255,16 +233,10 @@ export const sendVerifyOtp = async (req, res) => {
             });
         }
 
-
-
-
         const otp = String(Math.floor(100000 + Math.random() * 900000));
         user.verifyOtp = otp;
         user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000; // 24hrs
         await user.save();
-
-
-
 
         const mailOption = {
             from: process.env.SENDER_EMAIL,
@@ -274,21 +246,12 @@ export const sendVerifyOtp = async (req, res) => {
             html: EMAIL_VERIFY_TEMPLATE.replace("{{otp}}",otp).replace("{{email}}",user.email)
         };
 
-
-
-
         await transporter.sendMail(mailOption);
-
-
-
 
         res.json({
             success: true,
             message: "OTP sent to your email"
         });
-
-
-
 
     } catch (error) {
         res.json({
@@ -304,9 +267,7 @@ export const verifyEmail = async (req, res) => {
     try {
         const { userId, otp } = req.body;
 
-
         const user = await userModel.findById(userId);
-
 
         // Validate OTP
         if (user.verifyOtp !== otp) {
@@ -316,7 +277,6 @@ export const verifyEmail = async (req, res) => {
             });
         }
 
-
         // Check if OTP expired
         if (user.verifyOtpExpireAt < Date.now()) {
             return res.json({
@@ -325,15 +285,13 @@ export const verifyEmail = async (req, res) => {
             });
         }
 
-
         // Mark account as verified
         user.isAccountVerified = true;
         user.verifyOtp = '';
         user.verifyOtpExpireAt = 0;
 
-
         await user.save();
-       
+        
         const mailOption = {
             from: process.env.SENDER_EMAIL,
             to: user.email,
@@ -343,12 +301,10 @@ export const verifyEmail = async (req, res) => {
         };
         await transporter.sendMail(mailOption);
 
-
         res.json({
             success: true,
             message: "Email verified successfully"
         });
-
 
     } catch (error) {
         res.json({
@@ -377,9 +333,6 @@ export const sendResetOtp = async (req, res) => {
     try {
         const { email } = req.body;
 
-
-
-
         if (!email) {
             return res.json({
                 success: false,
@@ -387,13 +340,7 @@ export const sendResetOtp = async (req, res) => {
             });
         }
 
-
-
-
         const user = await userModel.findOne({ email });
-
-
-
 
         if (!user) {
             return res.json({
@@ -402,16 +349,10 @@ export const sendResetOtp = async (req, res) => {
             });
         }
 
-
-
-
         const otp = String(Math.floor(100000 + Math.random() * 900000));
         user.resetOtp = otp;
         user.resetOtpExpireAt = Date.now() + 15 * 60 * 1000; // 15 minutes
         await user.save();
-
-
-
 
         const mailOption = {
             from: process.env.SENDER_EMAIL,
@@ -421,21 +362,12 @@ export const sendResetOtp = async (req, res) => {
             html:PASSWORD_RESET_TEMPLATE.replace("{{otp}}",otp).replace("{{email}}",user.email)
         };
 
-
-
-
         await transporter.sendMail(mailOption);
-
-
-
 
         res.json({
             success: true,
             message: "OTP sent to your email"
         });
-
-
-
 
     } catch (error) {
         res.json({
@@ -451,9 +383,6 @@ export const resetPassword = async (req, res) => {
     try {
         const { email, otp, newPassword } = req.body;
 
-
-
-
         if (!email || !otp || !newPassword) {
             return res.json({
                 success: false,
@@ -461,13 +390,7 @@ export const resetPassword = async (req, res) => {
             });
         }
 
-
-
-
         const user = await userModel.findOne({ email });
-
-
-
 
         if (!user) {
             return res.json({
@@ -475,9 +398,6 @@ export const resetPassword = async (req, res) => {
                 message: "User not found"
             });
         }
-
-
-
 
         // Check if OTP matches and is valid
         if (!user.resetOtp || user.resetOtp !== otp) {
@@ -487,9 +407,6 @@ export const resetPassword = async (req, res) => {
             });
         }
 
-
-
-
         // Check OTP expiry
         if (user.resetOtpExpireAt < Date.now()) {
             return res.json({
@@ -498,29 +415,17 @@ export const resetPassword = async (req, res) => {
             });
         }
 
-
-
-
         const hashPassword = await bcrypt.hash(newPassword, 10);
         user.password = hashPassword;
         user.resetOtp = '';
         user.resetOtpExpireAt = 0;
 
-
-
-
         await user.save();
-
-
-
 
         res.json({
             success: true,
             message: "Password reset successfully"
         });
-
-
-
 
     } catch (error) {
         res.json({
@@ -531,16 +436,12 @@ export const resetPassword = async (req, res) => {
 };
 
 
-
-
 // Get user profile details
 export const getProfile = async (req, res) => {
     try {
         const userId = req.user.id;
 
-
         const user = await userModel.findById(userId).select('-password');
-
 
         if (!user) {
             return res.json({
@@ -548,7 +449,6 @@ export const getProfile = async (req, res) => {
                 message: "User not found"
             });
         }
-
 
         return res.json({
             success: true,
@@ -563,14 +463,11 @@ export const getProfile = async (req, res) => {
 };
 
 
-
-
 // Update user profile name
 export const updateProfileName = async (req, res) => {
     try {
         const userId = req.user.id;
         const { name } = req.body;
-
 
         if (!name) {
             return res.json({
@@ -579,9 +476,7 @@ export const updateProfileName = async (req, res) => {
             });
         }
 
-
         const user = await userModel.findById(userId);
-
 
         if (!user) {
             return res.json({
@@ -590,10 +485,8 @@ export const updateProfileName = async (req, res) => {
             });
         }
 
-
         user.name = name;
         await user.save();
-
 
         return res.json({
             success: true,
