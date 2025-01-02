@@ -19,7 +19,7 @@ const allowedOrigins = process.env.FRONTEND_URL.split(',');
 
 // Middlewares
 app.use(express.json());
-app.use(cookieParser());
+app.use(cookieParser(process.env.JWT_SECRET));
 
 // Configure CORS middleware
 app.use(cors({
@@ -31,7 +31,13 @@ app.use(cors({
         }
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['set-cookie']
 }));
+
+// Enable trust proxy for secure cookies behind a proxy (like in Render)
+app.set('trust proxy', 1);
 
 // API routes
 app.use('/api/auth', authRouters);

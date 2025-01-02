@@ -6,6 +6,18 @@ import { EMAIL_VERIFY_TEMPLATE,PASSWORD_RESET_TEMPLATE, WELCOME_TEMPLATE } from 
 import dotenv from 'dotenv';
 dotenv.config();
 
+// Create a function to get cookie options based on environment
+const getCookieOptions = () => {
+    return {
+      httpOnly: true,
+      secure: true, // Always true for production
+      sameSite: 'none', // Required for cross-site cookies
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      domain: process.env.NODE_ENV === 'production' 
+        ? '.onrender.com'  // Update this to match your domain
+        : 'localhost'
+    };
+  };
 
 // User registration
 export const register = async (req, res) => {
@@ -35,13 +47,8 @@ export const register = async (req, res) => {
                     { expiresIn: '7d' }
                 );
 
-
-                res.cookie('token', token, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-                    maxAge: 7 * 24 * 60 * 60 * 1000,
-                });
+                // Use the new cookie options
+                res.cookie('token', token, getCookieOptions());
 
 
                 return res.json({
@@ -82,12 +89,8 @@ export const register = async (req, res) => {
         );
 
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
+        // Use the new cookie options
+        res.cookie('token', token, getCookieOptions());
 
 
         return res.json({
@@ -155,12 +158,8 @@ export const login = async (req, res) => {
             );
 
 
-            res.cookie('token', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-                maxAge: 7 * 24 * 60 * 60 * 1000,
-            });
+            // Use the new cookie options
+            res.cookie('token', token, getCookieOptions());
 
 
             return res.json({
@@ -185,12 +184,8 @@ export const login = async (req, res) => {
         );
 
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
+        // Use the new cookie options
+        res.cookie('token', token, getCookieOptions());
 
 
         return res.json({
@@ -214,18 +209,19 @@ export const login = async (req, res) => {
 };
 
 
-
-
 // User logout
 export const logout = async (req, res) => {
     try {
+        // res.clearCookie('token', {
+        //     httpOnly: true,
+        //     secure: process.env.NODE_ENV === 'production',
+        //     samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+        // });
+
         res.clearCookie('token', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            ...getCookieOptions(),
+            maxAge: 0
         });
-
-
 
 
         return res.json({
@@ -239,7 +235,6 @@ export const logout = async (req, res) => {
         });
     }
 };
-
 
 
 
@@ -307,8 +302,6 @@ export const sendVerifyOtp = async (req, res) => {
 };
 
 
-
-
 // Verifying OTP
 export const verifyEmail = async (req, res) => {
     try {
@@ -369,8 +362,6 @@ export const verifyEmail = async (req, res) => {
 };
 
 
-
-
 // Check if user is authenticated
 export const isAuthenticated = async (req, res) => {
     try {
@@ -382,8 +373,6 @@ export const isAuthenticated = async (req, res) => {
         });
     }
 };
-
-
 
 
 // Send password reset OTP
@@ -458,8 +447,6 @@ export const sendResetOtp = async (req, res) => {
         });
     }
 };
-
-
 
 
 // Verifying reset OTP and updating password
