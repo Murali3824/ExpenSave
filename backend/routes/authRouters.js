@@ -19,9 +19,10 @@ authRouters.post('/register', register);
 authRouters.post('/login', login);
 authRouters.post('/logout', logout);
 
-// Routes that require authentication and verified account
+// Routes for sending and verifying OTP
 authRouters.post('/send-verify-otp', userAuth, sendVerifyOtp);
 authRouters.post('/verify-account', userAuth, verifyEmail);
+// Routes that require authentication and verified account
 authRouters.get('/is-auth', userAuth, checkAccountVerification, isAuthenticated);
 authRouters.get('/profile', userAuth, getProfile);
 authRouters.put('/update-profile', userAuth,updateProfileName );
