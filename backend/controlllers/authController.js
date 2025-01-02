@@ -32,11 +32,14 @@ export const register = async (req, res) => {
                 );
 
                 res.cookie('token', token, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-                    maxAge: 7 * 24 * 60 * 60 * 1000,
+                    httpOnly: true, // Prevent JavaScript access
+                    secure: process.env.NODE_ENV === 'production', // Enable Secure only in production
+                    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // None for cross-origin in production
+                    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+                    domain: process.env.NODE_ENV === 'production' ? '.expensave-money.onrender.com' : undefined, // Ensure subdomain coverage
+                    path: '/', // Apply cookie to all routes
                 });
+                
 
                 return res.json({
                     success: true,
@@ -74,11 +77,14 @@ export const register = async (req, res) => {
         );
 
         res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            httpOnly: true, // Prevent JavaScript access
+            secure: process.env.NODE_ENV === 'production', // Enable Secure only in production
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // None for cross-origin in production
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            domain: process.env.NODE_ENV === 'production' ? '.expensave-money.onrender.com' : undefined, // Ensure subdomain coverage
+            path: '/', // Apply cookie to all routes
         });
+        
 
         return res.json({
             success: true,
@@ -138,11 +144,14 @@ export const login = async (req, res) => {
             );
 
             res.cookie('token', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-                maxAge: 7 * 24 * 60 * 60 * 1000,
+                httpOnly: true, // Prevent JavaScript access
+                secure: process.env.NODE_ENV === 'production', // Enable Secure only in production
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // None for cross-origin in production
+                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+                domain: process.env.NODE_ENV === 'production' ? '.expensave-money.onrender.com' : undefined, // Ensure subdomain coverage
+                path: '/', // Apply cookie to all routes
             });
+            
 
             return res.json({
                 success: true,
@@ -165,12 +174,14 @@ export const login = async (req, res) => {
         );
 
         res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            httpOnly: true, // Prevent JavaScript access
+            secure: process.env.NODE_ENV === 'production', // Enable Secure only in production
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // None for cross-origin in production
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            domain: process.env.NODE_ENV === 'production' ? '.expensave-money.onrender.com' : undefined, // Ensure subdomain coverage
+            path: '/', // Apply cookie to all routes
         });
-
+        
         return res.json({
             success: true,
             message: 'Login successful',
