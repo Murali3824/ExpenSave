@@ -8,14 +8,28 @@ export const AppContext = createContext();
 export const AppContextProvider = (props) => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const [isLoggedin, setIsLoggedin] = useState(false);
-    const [userData, setUserData] = useState(false);
+    const [userData, setUserData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Configure axios defaults
     axios.defaults.withCredentials = true;
-    
+    axios.defaults.baseURL = backendUrl;
+
+    // Add axios interceptor for handling errors
+    axios.interceptors.response.use(
+        (response) => response,
+        (error) => {
+            if (error.response?.status === 401) {
+                setIsLoggedin(false);
+                setUserData(null);
+            }
+            return Promise.reject(error);
+        }
+    );
+
     const getUserData = async () => {
         try {
-            const { data } = await axios.get(`${backendUrl}/api/user/data`);
+            const { data } = await axios.get('/api/user/data');
             if (data.success) {
                 setUserData(data.userData);
             } else {
@@ -23,24 +37,29 @@ export const AppContextProvider = (props) => {
             }
         } catch (error) {
             console.error("Error fetching user data:", error);
-            toast.error(error.response?.data?.message || error.message);
+            if (error.response?.status !== 401) {  // Don't show error for unauthorized
+                toast.error(error.response?.data?.message || "Failed to fetch user data");
+            }
         }
     };
 
     const getAuthState = async () => {
         try {
-            const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`);
+            setIsLoading(true);
+            const { data } = await axios.get('/api/auth/is-auth');
             if (data.success) {
                 setIsLoggedin(true);
-                getUserData();
+                await getUserData();
             } else {
                 setIsLoggedin(false);
-                setUserData(false);
+                setUserData(null);
             }
         } catch (error) {
             console.error("Auth state error:", error);
             setIsLoggedin(false);
-            setUserData(false);
+            setUserData(null);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -49,7 +68,7 @@ export const AppContextProvider = (props) => {
     }, []);
 
     return (
-        <AppContext.Provider 
+        <AppContext.Provider
             value={{
                 backendUrl,
                 isLoggedin,
@@ -58,6 +77,7 @@ export const AppContextProvider = (props) => {
                 setUserData,
                 getUserData,
                 getAuthState,
+                isLoading
             }}
         >
             {props.children}
