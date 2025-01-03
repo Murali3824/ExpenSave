@@ -16,7 +16,7 @@ const getCookieConfig = () => {
         sameSite: 'None', // Cross-site cookies
         path: '/',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        domain: isProduction ? '.onrender.com' : undefined, // Use domain only in production
+        domain: isProduction ? 'expensave.onrender.com' : undefined, // Use domain only in production
     };
 };
 
