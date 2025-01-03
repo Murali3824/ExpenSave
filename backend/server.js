@@ -22,9 +22,7 @@ app.use(cookieParser());
 
 // Configure CORS middleware
 const corsConfig = {
-    origin: process.env.NODE_ENV === 'production' 
-        ? ['https://expensave-money.onrender.com']
-        : ['http://localhost:5173', 'http://192.168.1.13:5173'],
+    origin: process.env.FRONTEND_URL,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
