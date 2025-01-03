@@ -1,86 +1,79 @@
-// AppContextProvider.jsx
 import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-export const AppContext = createContext();
+
+export const AppContext = createContext()
+
 
 export const AppContextProvider = (props) => {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    const [isLoggedin, setIsLoggedin] = useState(false);
-    const [userData, setUserData] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    
+    axios.defaults.withCredentials = true  // on reloading user is displayed
 
-    // Configure axios defaults
-    axios.defaults.withCredentials = true;
-    axios.defaults.baseURL = backendUrl;
 
-    // Add axios interceptor for handling errors
-    axios.interceptors.response.use(
-        (response) => response,
-        (error) => {
-            if (error.response?.status === 401) {
-                setIsLoggedin(false);
-                setUserData(null);
-            }
-            return Promise.reject(error);
-        }
-    );
+    const backendUrl = import.meta.env.VITE_BACKEND_URL
+    const [isLoggedin, setIsLoggedin] = useState(false)
+    const [userData, setUserData] = useState(false)
 
+
+    // getting user data
     const getUserData = async () => {
         try {
-            const { data } = await axios.get('/api/user/data');
+            const { data } = await axios.get(`${backendUrl}/api/user/data`, {
+                withCredentials: true, // Ensure cookies are sent with the request
+            });
+
+
             if (data.success) {
+                // Successfully fetched user data
                 setUserData(data.userData);
+                // console.log("User data:", data.userData);
             } else {
                 toast.error(data.message || "Failed to fetch user data");
             }
         } catch (error) {
-            console.error("Error fetching user data:", error);
-            if (error.response?.status !== 401) {  // Don't show error for unauthorized
-                toast.error(error.response?.data?.message || "Failed to fetch user data");
-            }
+            toast.error(error.message)
         }
     };
 
+
+    // get user authorised or not
     const getAuthState = async () => {
         try {
-            setIsLoading(true);
-            const { data } = await axios.get('/api/auth/is-auth');
+            const { data } = await axios.get(backendUrl + '/api/auth/is-auth');
             if (data.success) {
                 setIsLoggedin(true);
-                await getUserData();
+                getUserData();  // Fetch user data if authenticated
             } else {
                 setIsLoggedin(false);
-                setUserData(null);
+                setUserData(false);
             }
         } catch (error) {
-            console.error("Auth state error:", error);
             setIsLoggedin(false);
-            setUserData(null);
-        } finally {
-            setIsLoading(false);
+            setUserData(false);
+            toast.error("Failed to check authentication status");
         }
-    };
-
-    useEffect(() => {
+    };    
+    useEffect(()=>{
         getAuthState();
-    }, []);
+    },[])
 
-    return (
-        <AppContext.Provider
-            value={{
-                backendUrl,
-                isLoggedin,
-                setIsLoggedin,
-                userData,
-                setUserData,
-                getUserData,
-                getAuthState,
-                isLoading
-            }}
-        >
+
+
+
+    const value = {
+        backendUrl,
+        isLoggedin,setIsLoggedin,
+        userData,setUserData,
+        getUserData,
+        getAuthState,
+    }
+
+
+    return(
+        <AppContext.Provider value={value}>
             {props.children}
         </AppContext.Provider>
-    );
-};
+    )
+}
+
