@@ -8,15 +8,13 @@ dotenv.config();
 
 // Create a function to get cookie options based on environment
 const getCookieConfig = () => {
-    const isProduction = process.env.NODE_ENV === 'production'; // Check if in production environment
     
     return {
         httpOnly: true,
-        secure: isProduction, // Only for HTTPS, secure cookies in production
+        secure: true, // Only for HTTPS, secure cookies in production
         sameSite: 'None', // Cross-site cookies
         path: '/',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        domain: isProduction ? 'expensave.onrender.com' : undefined, // Use domain only in production
     };
 };
 

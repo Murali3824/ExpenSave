@@ -22,20 +22,21 @@ app.use(cookieParser());
 
 // Configure CORS middleware
 const corsConfig = {
-    origin: function (origin, callback) {
-        const allowedOrigins = process.env.FRONTEND_URL.split(',');
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin: process.env.NODE_ENV === 'production' 
+        ? ['https://expensave-money.onrender.com']
+        : ['http://localhost:5173', 'http://192.168.1.13:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['set-cookie']
+    exposedHeaders: ['Set-Cookie']
 };
 app.use(cors(corsConfig));
+
+// Add these headers explicitly
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Credentials', 'true');
+    next();
+});
 
 // API routes
 app.use('/api/auth', authRouters);
