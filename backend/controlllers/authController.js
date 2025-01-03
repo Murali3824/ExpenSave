@@ -11,8 +11,8 @@ const getCookieConfig = () => {
     
     return {
         httpOnly: true,
-        secure: true, // Only for HTTPS, secure cookies in production
-        sameSite: 'None', // Cross-site cookies
+        secure: process.env.NODE_ENV === 'production',
+        samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
         path: '/',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     };
