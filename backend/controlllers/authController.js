@@ -7,14 +7,19 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Create a function to get cookie options based on environment
-const getCookieConfig = () => ({
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // Only set 'secure: true' in production (requires HTTPS)
-    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Use 'None' for cross-origin requests in production
-    domain: '.onrender.com', // Ensures the cookie is accessible across all subdomains
-    path: '/',
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-});
+const getCookieConfig = () => {
+    const isProduction = process.env.NODE_ENV === 'production'; // Check if in production environment
+    
+    return {
+        httpOnly: true,
+        secure: isProduction, // Only for HTTPS, secure cookies in production
+        sameSite: 'None', // Cross-site cookies
+        path: '/',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        domain: isProduction ? '.onrender.com' : undefined, // Use domain only in production
+    };
+};
+
 
 
 // User registration
