@@ -11,7 +11,7 @@ export const AppContextProvider = (props) => {
     axios.defaults.withCredentials = true  // on reloading user is displayed
 
 
-    const backendUrl = "https://expensavemoney.onrender.com";
+    const backendUrl = "http://localhost:4000";
     const [isLoggedin, setIsLoggedin] = useState(false)
     const [userData, setUserData] = useState(false)
 
@@ -22,6 +22,7 @@ export const AppContextProvider = (props) => {
             const { data } = await axios.get(`${backendUrl}/api/user/data`, {
                 withCredentials: true, // Ensure cookies are sent with the request
             });
+            console.log(data);
 
 
             if (data.success) {
