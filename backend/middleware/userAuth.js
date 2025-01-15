@@ -3,16 +3,22 @@ import userModel from '../models/userModel.js';
 
 const userAuth = async (req, res, next) => {
     try {
-        const { token } = req.cookies.token;
+
+        const { token } = req.cookies;
+        // const token  = req.cookies.token;
+        
+        console.log("Token from cookies:", token);
+        
         if (!token) {
             return res.json({
                 success: false,
-                message: 'Not authorized Login again'
+                message: 'Not authorized'
             });
         }
 
         try {
             const tokenDecode = jwt.verify(token, process.env.JWT_SECRET);
+            console.log(token);
             if (tokenDecode) {
                 const user = await userModel.findById(tokenDecode.id);
                 
