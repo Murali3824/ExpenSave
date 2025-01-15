@@ -3,7 +3,7 @@ import userModel from '../models/userModel.js';
 
 const userAuth = async (req, res, next) => {
     try {
-        const { token } = req.cookies;
+        const { token } = req.cookies.token;
         if (!token) {
             return res.json({
                 success: false,
