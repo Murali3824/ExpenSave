@@ -11,7 +11,7 @@ export const AppContextProvider = (props) => {
     axios.defaults.withCredentials = true  // on reloading user is displayed
 
 
-    const backendUrl = "http://localhost:4000";
+    const backendUrl = "https://expensavemoney.onrender.com";
     const [isLoggedin, setIsLoggedin] = useState(false)
     const [userData, setUserData] = useState(false)
 
