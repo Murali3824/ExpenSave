@@ -10,6 +10,7 @@ import ExpenseManager from './components/ExpenseManager';
 import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         draggable
         pauseOnHover
         theme="colored"
+        className="w-[50px] sm:w-[200px] md:w-[300px]"
         style={{
           zIndex: 9999,
         }}
@@ -38,6 +40,7 @@ const App = () => {
           background: 'linear-gradient(to right, #4cd964, #5ac8fa)', // Gradient progress bar
         }}
       />
+      <ScrollToTop/>
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/login' element={<Login/>}/>
