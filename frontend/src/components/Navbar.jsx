@@ -34,7 +34,7 @@ const Navbar = () => {
             <div className="max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 md:px-14 lg:px-24">
                 <div className="flex justify-between items-center py-8">
                     {/* Logo Section */}
-                    <div onClick={() => navigate('/')} className="cursor-pointer flex items-center gap-1 sm:gap-3">
+                    <div onClick={() => navigate('/')} className="cursor-pointer flex items-center gap-2 sm:gap-3">
                         <div className="bg-indigo-500/20 p-2 rounded-full animate-pulse">
                             <HandCoins className="text-indigo-400 w-9 h-9 sm:w-10 sm:h-10" />
                         </div>

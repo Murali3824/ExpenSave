@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PieChart, Wallet, TrendingUp, Shield, ArrowRight } from 'lucide-react';
-import Navbar from './Navbar';
 import { AppContext } from '../context/AppContext';
 
 const LearnMore = () => {
@@ -9,12 +8,11 @@ const LearnMore = () => {
     const { userData } = useContext(AppContext);
 
     const handleNavigate = () => {
-        navigate(userData ? '/dashboard' : '/login');
+        navigate('/login');
     };
 
     return (
-        <div id="learn-more" className="min-h-screen w-full  text-white">
-            <Navbar />
+        <div id="learn-more" className="mt-4 min-h-screen w-full  text-white">
             <div className="max-w-6xl 2xl:max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
                 <div className="flex flex-col justify-center items-center text-center max-w-4xl mx-auto mt-10 mb-16">
                     <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
@@ -23,13 +21,15 @@ const LearnMore = () => {
                     <p className="text-slate-400 text-lg md:text-xl mb-8 leading-relaxed">
                         Take control of your financial journey with powerful expense tracking, insightful analytics, and smart budgeting tools.
                     </p>
-                    <button
-                        onClick={handleNavigate}
-                        className="group w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-all"
-                    >
-                        <span>Get Started Now</span>
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </button>
+                    {!userData && (
+                        <button
+                            onClick={handleNavigate}
+                            className="group w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-all"
+                        >
+                            <span>Get Started Now</span>
+                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </button>
+                    )}
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
