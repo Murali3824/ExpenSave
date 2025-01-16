@@ -5,9 +5,7 @@ export const getUserData = async (req,res) => {
     try {
         const { token } = req.cookies;
         // const token  = req.cookies.token;
-        
-        console.log("Token from cookies:", token);
-        
+                
         const {userId} = req.body;
 
         const user = await userModel.findById(userId);

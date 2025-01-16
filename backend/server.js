@@ -21,11 +21,14 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Configure CORS middleware
-const corsConfig = {
-    origin: process.env.FRONTEND_URL,
+app.use(cors({
+    origin: process.env.NODE_ENV === "production" 
+        ? "https://expensave-money.onrender.com"  
+        : "http://localhost:3000",
     credentials: true,
-};
-app.use(cors(corsConfig));
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 // Add these headers explicitly
 app.use((req, res, next) => {

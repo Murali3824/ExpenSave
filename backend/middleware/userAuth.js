@@ -5,20 +5,17 @@ const userAuth = async (req, res, next) => {
     try {
 
         const { token } = req.cookies;
-        // const token  = req.cookies.token;
-        
-        console.log("Token from cookies:", token);
+        console.log('Cookies received:', req.cookies); 
         
         if (!token) {
-            return res.json({
+            return res.status(401).json({
                 success: false,
-                message: 'Not authorized'
+                message: 'Not authorized - No token found'
             });
         }
 
         try {
             const tokenDecode = jwt.verify(token, process.env.JWT_SECRET);
-            console.log(token);
             if (tokenDecode) {
                 const user = await userModel.findById(tokenDecode.id);
                 

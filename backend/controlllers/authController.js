@@ -14,12 +14,14 @@ dotenv.config();
 const getCookieConfig = () => {
     return {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        samesite: "None",
-        path: "/",
+        secure: process.env.NODE_ENV === "production", // true in production
+        sameSite: 'None', // Note: 'sameSite' not 'samesite'
+        path: '/',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        domain: process.env.NODE_ENV === "production" ? '.expensave-money.onrender.com' : 'localhost' // Match your frontend domain
     };
 };
+
 
 // User registration
 export const register = async (req, res) => {
