@@ -7,14 +7,11 @@ export const AppContext = createContext()
 
 
 export const AppContextProvider = (props) => {
+    
+    axios.defaults.withCredentials = true  // on reloading user is displayed
 
-    const backendUrl = process.env.NODE_ENV === "production"
-        ? "https://expensavemoney.onrender.com" 
-        : "http://localhost:4000";
 
-    axios.defaults.withCredentials = true;
-    axios.defaults.headers.common['Access-Control-Allow-Credentials'] = true;
-
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://expensavemoney.onrender.com";
     const [isLoggedin, setIsLoggedin] = useState(false)
     const [userData, setUserData] = useState(false)
 
@@ -57,24 +54,24 @@ export const AppContextProvider = (props) => {
             setUserData(false);
             toast.error("Failed to check authentication status");
         }
-    };
-    useEffect(() => {
+    };    
+    useEffect(()=>{
         getAuthState();
-    }, [])
+    },[])
 
 
 
 
     const value = {
         backendUrl,
-        isLoggedin, setIsLoggedin,
-        userData, setUserData,
+        isLoggedin,setIsLoggedin,
+        userData,setUserData,
         getUserData,
         getAuthState,
     }
 
 
-    return (
+    return(
         <AppContext.Provider value={value}>
             {props.children}
         </AppContext.Provider>
