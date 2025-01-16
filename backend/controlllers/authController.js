@@ -14,11 +14,10 @@ dotenv.config();
 const getCookieConfig = () => {
     return {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // true in production
-        sameSite: 'None', // Note: 'sameSite' not 'samesite'
+        secure: process.env.NODE_ENV === "production", 
+        sameSite: 'None', 
         path: '/',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        domain: process.env.NODE_ENV === "production" ? '.expensave-money.onrender.com' : 'localhost' // Match your frontend domain
     };
 };
 
