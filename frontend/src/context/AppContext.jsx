@@ -52,7 +52,7 @@ export const AppContextProvider = (props) => {
         } catch (error) {
             setIsLoggedin(false);
             setUserData(false);
-            toast.error("Failed to check authentication status");
+            // toast.error("Failed to check authentication status");
         }
     };    
     useEffect(()=>{
