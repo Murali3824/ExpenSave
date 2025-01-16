@@ -182,10 +182,12 @@ export const login = async (req, res) => {
 // User logout
 export const logout = async (req, res) => {
     try {
+        // Clear the cookie with proper options for production
         res.clearCookie("token", {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            samesite: "None",
+            secure: process.env.NODE_ENV === "production",  // Ensure HTTPS in production
+            sameSite: "None", // For cross-origin requests
+            path: "/",
         });
 
         return res.json({
@@ -199,6 +201,7 @@ export const logout = async (req, res) => {
         });
     }
 };
+
 
 // Send verification OTP to the user's email
 export const sendVerifyOtp = async (req, res) => {
