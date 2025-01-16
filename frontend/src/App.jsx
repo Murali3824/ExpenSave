@@ -26,7 +26,6 @@ const App = () => {
         draggable
         pauseOnHover
         theme="colored"
-        className="w-[50px] sm:w-[200px] md:w-[300px]"
         style={{
           zIndex: 9999,
         }}
