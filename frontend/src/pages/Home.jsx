@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import Header from '../components/Header';
 import LearnMore from '../components/LearnMore';
+import Footer from '../components/Footer';
 
 const Home = () => {
     return (
@@ -9,6 +10,7 @@ const Home = () => {
             <Navbar/>
             <Header/>
             <LearnMore/>
+            <Footer/>
         </div>
     );
 };

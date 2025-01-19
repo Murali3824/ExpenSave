@@ -9,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import ExpenseManager from './components/ExpenseManager';
 import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
-import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 
 const App = () => {
@@ -49,7 +48,6 @@ const App = () => {
         <Route path='/dashboard' element={<Dashboard/>}/>
         <Route path='/add-expenses' element={<ExpenseManager/>}/>
       </Routes>
-      <Footer/>
     </div>
   );
 };
