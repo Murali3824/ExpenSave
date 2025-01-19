@@ -13,14 +13,13 @@ const Dashboard = () => {
     const [error, setError] = useState("");
     const [timeFilter, setTimeFilter] = useState('all');
     const [viewType, setViewType] = useState('category');
-    const [isDataLoading, setIsDataLoading] = useState(true);
     const isSmallScreen = useMediaQuery({ query: '(max-width: 640px)' });
 
     const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308'];
 
     const fetchTransactions = useCallback(async () => {
         try {
-            setIsDataLoading(true);
+            setLoading(true);
             const response = await axios.get(`${backendUrl}/api/transaction/get-transaction`, {
                 withCredentials: true
             });
@@ -30,7 +29,7 @@ const Dashboard = () => {
             setError("Failed to load transactions");
             console.error("Error fetching transactions:", err);
         } finally {
-            setIsDataLoading(false);
+            setLoading(false);
         }
     }, [backendUrl]);
 
@@ -117,7 +116,7 @@ const Dashboard = () => {
         }));
     };
 
-    if (isDataLoading) {
+    if (loading) {
         return (
             <div className="w-full min-h-screen bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900">
                 <Navbar />

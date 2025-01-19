@@ -73,8 +73,7 @@ export const AppContextProvider = (props) => {
         userData,setUserData,
         getUserData,
         getAuthState,
-        loading,
-        setLoading
+        loading,setLoading,
     }
 
 
