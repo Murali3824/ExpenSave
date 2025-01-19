@@ -28,6 +28,8 @@ const Dashboard = () => {
 
     const fetchTransactions = async () => {
         try {
+            axios.defaults.withCredentials = true;
+
             setLoading(true);
             const response = await axios.get(`${backendUrl}/api/transaction/get-transaction`);
             const transactionsData = response.data.data || response.data;
