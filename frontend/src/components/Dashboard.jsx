@@ -1,46 +1,43 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { AppContext } from "../context/AppContext";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { HandCoins, TrendingUp, Calendar, Filter } from 'lucide-react';
+import { HandCoins, Calendar, Filter } from 'lucide-react';
 import axios from 'axios';
 import { useMediaQuery } from 'react-responsive';
-import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
 const Dashboard = () => {
-    axios.defaults.withCredentials = true  // on reloading user is displayed
-
-    const navigate = useNavigate();
     const { backendUrl, loading, setLoading } = useContext(AppContext);
     const [transactions, setTransactions] = useState([]);
-    // const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [timeFilter, setTimeFilter] = useState('all');
     const [viewType, setViewType] = useState('category');
+    const [isDataLoading, setIsDataLoading] = useState(true);
     const isSmallScreen = useMediaQuery({ query: '(max-width: 640px)' });
 
     const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308'];
 
-    useEffect(() => {
-        fetchTransactions();
-    }, []);
-
-    const fetchTransactions = async () => {
+    const fetchTransactions = useCallback(async () => {
         try {
-            axios.defaults.withCredentials = true;
-
-            setLoading(true);
-            const response = await axios.get(`${backendUrl}/api/transaction/get-transaction`);
+            setIsDataLoading(true);
+            const response = await axios.get(`${backendUrl}/api/transaction/get-transaction`, {
+                withCredentials: true
+            });
             const transactionsData = response.data.data || response.data;
             setTransactions(Array.isArray(transactionsData) ? transactionsData : []);
         } catch (err) {
             setError("Failed to load transactions");
             console.error("Error fetching transactions:", err);
         } finally {
-            setLoading(false);
+            setIsDataLoading(false);
         }
-    };
+    }, [backendUrl]);
+
+    useEffect(() => {
+        fetchTransactions();
+    }, [fetchTransactions]);
+
 
     const filterTransactionsByTime = (transactions) => {
         const now = new Date();
@@ -120,12 +117,15 @@ const Dashboard = () => {
         }));
     };
 
-    if (loading) {
+    if (isDataLoading) {
         return (
-            <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-                    <p className="text-slate-200">Loading your dashboard...</p>
+            <div className="w-full min-h-screen bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900">
+                <Navbar />
+                <div className="flex items-center justify-center min-h-[calc(100vh-64px)]">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                        <p className="text-slate-200">Loading your dashboard...</p>
+                    </div>
                 </div>
             </div>
         );
