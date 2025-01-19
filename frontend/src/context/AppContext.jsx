@@ -11,8 +11,8 @@ export const AppContextProvider = (props) => {
     axios.defaults.withCredentials = true  // on reloading user is displayed
 
 
-    // const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    const backendUrl = 'https://expensave-backend-4483.onrender.com';
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://expensave-backend-4483.onrender.com';
+
     const [isLoggedin, setIsLoggedin] = useState(false)
     const [userData, setUserData] = useState(false)
     const [loading, setLoading] = useState(true); 
@@ -73,7 +73,8 @@ export const AppContextProvider = (props) => {
         userData,setUserData,
         getUserData,
         getAuthState,
-        loading
+        loading,
+        setLoading
     }
 
 

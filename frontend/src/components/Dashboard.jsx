@@ -10,7 +10,7 @@ import Footer from './Footer';
 
 const Dashboard = () => {
     const navigate = useNavigate();
-    const { backendUrl, loading } = useContext(AppContext);
+    const { backendUrl, loading, setLoading } = useContext(AppContext);
     const [transactions, setTransactions] = useState([]);
     // const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
