@@ -15,6 +15,7 @@ export const AppContextProvider = (props) => {
     const backendUrl = 'https://expensave-backend-4483.onrender.com';
     const [isLoggedin, setIsLoggedin] = useState(false)
     const [userData, setUserData] = useState(false)
+    const [loading, setLoading] = useState(true); 
 
 
     // getting user data
@@ -42,10 +43,11 @@ export const AppContextProvider = (props) => {
     // get user authorised or not
     const getAuthState = async () => {
         try {
+            setLoading(true); // Add this
             const { data } = await axios.get(backendUrl + '/api/auth/is-auth');
             if (data.success) {
                 setIsLoggedin(true);
-                getUserData();  // Fetch user data if authenticated
+                await getUserData();
             } else {
                 setIsLoggedin(false);
                 setUserData(false);
@@ -53,12 +55,14 @@ export const AppContextProvider = (props) => {
         } catch (error) {
             setIsLoggedin(false);
             setUserData(false);
-            // toast.error("Failed to check authentication status");
+        } finally {
+            setLoading(false); // Add this
         }
-    };    
-    useEffect(()=>{
+    };
+
+    useEffect(() => {
         getAuthState();
-    },[])
+    }, []);
 
 
 
@@ -69,6 +73,7 @@ export const AppContextProvider = (props) => {
         userData,setUserData,
         getUserData,
         getAuthState,
+        loading
     }
 
 

@@ -10,9 +10,9 @@ import Footer from './Footer';
 
 const Dashboard = () => {
     const navigate = useNavigate();
-    const { backendUrl } = useContext(AppContext);
+    const { backendUrl, loading } = useContext(AppContext);
     const [transactions, setTransactions] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [timeFilter, setTimeFilter] = useState('all');
     const [viewType, setViewType] = useState('category');
@@ -250,6 +250,7 @@ const Dashboard = () => {
                     </ResponsiveContainer>
                 </div>
             </div>
+            <Footer/>
         </div>
     );
 };

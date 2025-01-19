@@ -10,6 +10,7 @@ import ExpenseManager from './components/ExpenseManager';
 import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
 import ScrollToTop from './components/ScrollToTop';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   return (
@@ -38,15 +39,20 @@ const App = () => {
           background: 'linear-gradient(to right, #4cd964, #5ac8fa)', // Gradient progress bar
         }}
       />
-      <ScrollToTop/>
+      <ScrollToTop />
       <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/login' element={<Login/>}/>
-        <Route path='/profile' element={<Profile/>}/>
-        <Route path='/email-verify' element={<EmailVerify/>}/>
-        <Route path='/reset-password' element={<ResetPassword/>}/>
-        <Route path='/dashboard' element={<Dashboard/>}/>
-        <Route path='/add-expenses' element={<ExpenseManager/>}/>
+        <Route path='/' element={<Home />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/profile' element={<Profile />} />
+        <Route path='/email-verify' element={<EmailVerify />} />
+        <Route path='/reset-password' element={<ResetPassword />} />
+        <Route path='/dashboard' element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+        />
+        <Route path='/add-expenses' element={<ExpenseManager />} />
       </Routes>
     </div>
   );
