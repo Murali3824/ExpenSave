@@ -14,13 +14,11 @@ dotenv.config();
 const getCookieConfig = () => {
     return {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Secure only in production
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+        secure: true,
+        sameSite: "none",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     };
 };
-
-
 
 // User registration
 export const register = async (req, res) => {
@@ -185,10 +183,9 @@ export const logout = async (req, res) => {
         // Clear the cookie with proper options for production
         res.clearCookie("token", {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+            secure: true,
+            sameSite: "none",
         });
-        
 
         return res.json({
             success: true,
@@ -201,7 +198,6 @@ export const logout = async (req, res) => {
         });
     }
 };
-
 
 // Send verification OTP to the user's email
 export const sendVerifyOtp = async (req, res) => {
