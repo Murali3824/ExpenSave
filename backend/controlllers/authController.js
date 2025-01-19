@@ -14,12 +14,12 @@ dotenv.config();
 const getCookieConfig = () => {
     return {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", 
-        sameSite: 'None', 
-        path: '/',
+        secure: process.env.NODE_ENV === "production", // Secure only in production
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     };
 };
+
 
 
 // User registration
@@ -185,10 +185,10 @@ export const logout = async (req, res) => {
         // Clear the cookie with proper options for production
         res.clearCookie("token", {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",  // Ensure HTTPS in production
-            sameSite: "None", // For cross-origin requests
-            path: "/",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
         });
+        
 
         return res.json({
             success: true,
