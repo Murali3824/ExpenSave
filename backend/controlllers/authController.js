@@ -4,6 +4,7 @@ import userModel from "../models/userModel.js";
 import transporter from "../config/nodeMailer.js";
 import {
     EMAIL_VERIFY_TEMPLATE,
+    LOGIN_SUCCESS_TEMPLATE,
     PASSWORD_RESET_TEMPLATE,
     WELCOME_TEMPLATE,
 } from "../config/emailTemplates.js";
@@ -159,6 +160,18 @@ export const login = async (req, res) => {
         // Use the new cookie options
         res.cookie("token", token, getCookieConfig());
 
+        const mailOption = {
+            from: `"Expensave" <${process.env.SENDER_EMAIL}>`,
+            to: user.email,
+            subject: "Successful Login",
+            html: LOGIN_SUCCESS_TEMPLATE.replace(
+                "{{dashboardLink}}",
+                `${process.env.FRONTEND_URL}`
+            ),
+        };
+
+        await transporter.sendMail(mailOption);
+
         return res.json({
             success: true,
             message: "Login successful",
@@ -219,7 +232,7 @@ export const sendVerifyOtp = async (req, res) => {
         await user.save();
 
         const mailOption = {
-            from: process.env.SENDER_EMAIL,
+            from: `"Expensave" <${process.env.SENDER_EMAIL}>`,
             to: user.email,
             subject: "Account Verification OTP",
             // text: `Your OTP is ${otp}. Verify your account using this OTP`,
@@ -274,7 +287,7 @@ export const verifyEmail = async (req, res) => {
         await user.save();
 
         const mailOption = {
-            from: process.env.SENDER_EMAIL,
+            from: `"Expensave" <${process.env.SENDER_EMAIL}>`,
             to: user.email,
             subject: "Welcome to ExpenSave",
             // text: `welcome`,
@@ -336,7 +349,7 @@ export const sendResetOtp = async (req, res) => {
         await user.save();
 
         const mailOption = {
-            from: process.env.SENDER_EMAIL,
+            from: `"Expensave" <${process.env.SENDER_EMAIL}>`,
             to: user.email,
             subject: "Password Reset OTP",
             // text: `Your OTP for resetting your password is ${otp}. Use this OTP to proceed with resetting your password.`
