@@ -9,6 +9,8 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 
 const Dashboard = () => {
+    axios.defaults.withCredentials = true  // on reloading user is displayed
+
     const navigate = useNavigate();
     const { backendUrl, loading, setLoading } = useContext(AppContext);
     const [transactions, setTransactions] = useState([]);
